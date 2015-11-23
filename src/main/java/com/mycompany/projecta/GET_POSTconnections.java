@@ -19,12 +19,12 @@ import java.net.URL;
 public class GET_POSTconnections {
 
   private final String USER_AGENT = "Mozilla/5.0";
-
- 
+  
+  
   // HTTP GET request
   public void sendGet() throws Exception {
 
-    String url = "http://localhost:8080/job/MasterJob/build?token=build";
+    String url = "http://localhost:8080/job/MasterJob/lastBuild/api/json";
     java.net.URL obj = new URL(null, url, new sun.net.www.protocol.http.Handler());
     HttpURLConnection con = (HttpURLConnection) obj.openConnection();
     
@@ -54,9 +54,23 @@ public class GET_POSTconnections {
 	
   
   // HTTP POST request
-  public void sendPost(String JobName) throws Exception {
+  public String sendPost(String JobName, String task) throws Exception {
+    
+    String postResponse = "";
+    String inputLine;
+    String url = "";
 
-    String url = "http://localhost:8080/job/" + JobName + "/build?token=build";
+    switch (task) {
+          
+      case "trigger":
+        url = "http://localhost:8080/job/" + JobName + "/build?token=build";   
+      break;
+            
+      case "build result":                    
+        url = "http://localhost:8080/job/" + JobName + "/lastBuild/api/json";               
+      break;
+    }
+    
     java.net.URL obj = new URL(null, url, new sun.net.www.protocol.http.Handler());
     HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 
@@ -81,15 +95,22 @@ public class GET_POSTconnections {
 
     StringBuilder response;
     try (BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()))) {
-      String inputLine;
+      
       response = new StringBuilder();
+      
       while ((inputLine = in.readLine()) != null) {
-        response.append(inputLine);
+        
+        if(inputLine.contains("\"result\":\"SUCCESS\"")) {       
+          return "passed";   
+        } 
+        if(inputLine.contains("\"result\":\"FAILURE\"")) {       
+          return "failed";   
+        }
       }
     }
-
     //print result
     System.out.println(response.toString());
+    return "failed";
   }
 
 }

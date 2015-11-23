@@ -14,10 +14,17 @@ import java.io.FileReader;
  */
 public class ReadFiles {
   
+  static String masterbuildLog = "/Users/fernandorodriguez/Desktop/MasterBuildLog.txt";
+  
   public String ReadFile(String project) throws Exception {
+    
+    //Implementing the Interface methods
+    CommonTasks messageLog = new CommonTasks();
     
     String source = "";
     String target = "";
+    String buildResult = "";
+    String fileExtension = "";
     
     GET_POSTconnections conn = new GET_POSTconnections();
     Copy_DeleteFiles cd = new Copy_DeleteFiles();
@@ -34,23 +41,46 @@ public class ReadFiles {
           
           case "Project Dependency":
                      line = br.readLine();
-                     //conn.sendPost(line);
-                     break;
+                     conn.sendPost(line, "trigger");
+                     Thread.sleep(4000);
+                     buildResult = conn.sendPost(line, "build result");
+                                         
+                     if("failed".equals(buildResult)) {return "failed";};
+                     Thread.sleep(20000);
+          break;
             
-          case "Copy Binary files":  
+          case "Copy Directory to Directory":  
                      
                      line = br.readLine();                    
-                     if("source".equals(line)) {
-                       
-                       source = br.readLine();
+                     if("source".equals(line)) {source = br.readLine();}
                        line = br.readLine();
+                       
                        target = br.readLine();
                        cd.CopyTo(source, target);
-                     } 
-                     else return "failed";
-                     break;
+          break;
             
+          case "Copy File to Directory":  
+                     
+                     line = br.readLine();                    
+                     if("source".equals(line)) {source = br.readLine();}
+                       line = br.readLine();
+                       
+                       if("file extension".equals(line)) {fileExtension = br.readLine();};
+                       line = br.readLine();
+                       
+                       target = br.readLine();
+                       cd.CopyFilesTo(source, target, fileExtension);
+          break;  
             
+          case "Project":
+                     line = br.readLine();
+                     conn.sendPost(line, "trigger");
+                     Thread.sleep(4000);
+                     buildResult = conn.sendPost(line, "build result");
+                                         
+                     if("failed".equals(buildResult)) {return "failed";};
+                     Thread.sleep(20000);
+          break;  
             
             
         }
@@ -58,7 +88,11 @@ public class ReadFiles {
         line = br.readLine();
       }   
     } 
-    return "";
+    return "passed";
   }
+
+  
+  
+  
   
 }
