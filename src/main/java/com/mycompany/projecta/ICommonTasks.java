@@ -11,14 +11,19 @@ package com.mycompany.projecta;
  */
 public interface ICommonTasks {
   
+  
   public String ReadFile(String project) throws Exception;
   
   public void LogMessage(String logPath, String logMessage);
     
-  public void sendPost(String JobName) throws Exception;
+  public String SendPost(String JobName, String task, String urlRepository) throws Exception;
   
-  public void DirectoryToDirectory(String source, String target) throws Exception;
+  public String DirectoryToDirectory(String source, String target) throws Exception;
   
-  public void FileToDirectory(String source, String target, String fileExtension) throws Exception;
+  public String FileToDirectory(String source, String target, String fileExtension) throws Exception;
+  
+  public String ExecuteCommandPing(String command);
+  
+  public void ExecuteCommand(String command);
   
 }

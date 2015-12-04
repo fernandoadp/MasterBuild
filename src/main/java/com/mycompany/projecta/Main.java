@@ -5,16 +5,16 @@
  */
 package com.mycompany.projecta;
 
-import java.io.BufferedWriter;
+//import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
+//import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+//import java.io.OutputStreamWriter;
+//import java.io.Writer;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.ZonedDateTime;
+//import java.time.ZonedDateTime;
 
 /**
  *
@@ -24,14 +24,13 @@ public class Main {
   
   static String masterbuildLog = "/Users/fernandorodriguez/Desktop/MasterBuildLog.txt";
   static String masterbuildPath = "/Users/fernandorodriguez/Desktop/MasterBuild/";
+  static String result = "";
   
   
-  public static void main (String[] args) throws IOException {
+  public static void main (String[] args) throws IOException, Exception {
        
     //Implementing the Interface methods
-    CommonTasks messageLog = new CommonTasks();
-    
-    ReadFiles read = new ReadFiles();
+    CommonTasks Icommon = new CommonTasks();
     
     //Delete the ".DS_Store" file created by the system (mac osx) into the "MasterBuild" folder
     Path filepath = FileSystems.getDefault().getPath(masterbuildPath + ".DS_Store");
@@ -45,17 +44,21 @@ public class Main {
       if(listOfFiles.length < 1) {
         
         //If the "MasterBuild" folder is empty, we send an error message to the Log    
-        messageLog.LogMessage(masterbuildLog, "MasterBuild folder is empty. ");
+        Icommon.LogMessage(masterbuildLog, " MasterBuild folder is empty. ");
         
       } else {
              
         for (File file : listOfFiles) {
         
-          if (file.isFile()) {         
-           
-            if(!"passed".equals(read.ReadFile(file.getAbsolutePath()))) {
+          if (file.isFile()) {   
+            
+            result = Icommon.ReadFile(file.getAbsolutePath());
+            
+            if("delete passed".equals(result)) break;
+            
+            if(!"passed".equals(result)) {
               
-              messageLog.LogMessage(masterbuildLog, file.getName() + " Build has failed. ");
+              Icommon.LogMessage(masterbuildLog, file.getName() + " " + result);
               break;
             }
           }   
